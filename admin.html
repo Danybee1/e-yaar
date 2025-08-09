@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration E-Yaar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-cog"></i> E-Yaar Admin</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="users">
+                            <i class="fas fa-users"></i> Utilisateurs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="sellers">
+                            <i class="fas fa-store"></i> Vendeurs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="products">
+                            <i class="fas fa-box"></i> Produits
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="orders">
+                            <i class="fas fa-shopping-cart"></i> Commandes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="commissions">
+                            <i class="fas fa-money-bill-wave"></i> Commissions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="settings">
+                            <i class="fas fa-cog"></i> Paramètres
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> Retour au site
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <div class="admin-header">
+                <div class="header-content">
+                    <h2 id="sectionTitle">Tableau de bord</h2>
+                    <div class="admin-info">
+                        <span>Admin: danielouedraogo1@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content" id="adminContent">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="content-section active">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon users">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalUsers">0</h3>
+                                    <p>Utilisateurs</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon sellers">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalSellers">0</h3>
+                                    <p>Vendeurs</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon products">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalProducts">0</h3>
+                                    <p>Produits</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon revenue">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalRevenue">0 FCFA</h3>
+                                    <p>Revenus</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="admin-card">
+                                <h5>Dernières inscriptions</h5>
+                                <div id="recentUsers"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="admin-card">
+                                <h5>Derniers vendeurs</h5>
+                                <div id="recentSellers"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users" class="content-section">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h5>Gestion des utilisateurs</h5>
+                            <button class="btn btn-primary btn-sm" onclick="exportUsers()">
+                                <i class="fas fa-download"></i> Exporter
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Date d'inscription</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sellers Section -->
+                <div id="sellers" class="content-section">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h5>Gestion des vendeurs</h5>
+                            <button class="btn btn-primary btn-sm" onclick="exportSellers()">
+                                <i class="fas fa-download"></i> Exporter
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Paiement Mobile</th>
+                                        <th>Contrat signé</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sellersTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div id="products" class="content-section">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h5>Gestion des produits</h5>
+                            <button class="btn btn-success btn-sm" onclick="addProduct()">
+                                <i class="fas fa-plus"></i> Ajouter un produit
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Image</th>
+                                        <th>Nom</th>
+                                        <th>Prix</th>
+                                        <th>Vendeur</th>
+                                        <th>Catégorie</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="orders" class="content-section">
+                    <div class="admin-card">
+                        <h5>Gestion des commandes</h5>
+                        <div id="ordersContent">
+                            <p>Aucune commande pour le moment</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commissions Section -->
+                <div id="commissions" class="content-section">
+                    <div class="admin-card">
+                        <h5>Gestion des commissions</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="commission-info">
+                                    <h6>Comptes de paiement</h6>
+                                    <p><strong>Orange Money:</strong> +226 66841181</p>
+                                    <p><strong>Telecel Money:</strong> +226 78551867</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="commission-info">
+                                    <h6>Taux de commission</h6>
+                                    <p><strong>Taux actuel:</strong> 10%</p>
+                                    <button class="btn btn-warning btn-sm" onclick="changeCommissionRate()">
+                                        Modifier le taux
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings" class="content-section">
+                    <div class="admin-card">
+                        <h5>Paramètres administrateur</h5>
+                        <form id="adminSettingsForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email administrateur</label>
+                                        <input type="email" class="form-control" value="danielouedraogo1@gmail.com" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nouveau mot de passe</label>
+                                        <input type="password" class="form-control" id="newPassword">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirmer le nouveau mot de passe</label>
+                                <input type="password" class="form-control" id="confirmPassword">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter un produit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nom du produit</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Prix (FCFA)</label>
+                            <input type="number" class="form-control" name="price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Vendeur</label>
+                            <select class="form-control" name="seller" required>
+                                <option value="">Sélectionner un vendeur</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Catégorie</label>
+                            <select class="form-control" name="category" required>
+                                <option value="">Sélectionner une catégorie</option>
+                                <option value="Agriculture">Agriculture</option>
+                                <option value="Alimentation">Alimentation</option>
+                                <option value="Artisanat">Artisanat</option>
+                                <option value="Automobile">Automobile</option>
+                                <option value="Beauté & Santé">Beauté & Santé</option>
+                                <option value="Électronique">Électronique</option>
+                                <option value="Mode">Mode</option>
+                                <option value="Maison">Maison</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL de l'image</label>
+                            <input type="url" class="form-control" name="image" placeholder="https://...">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ajouter le produit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html> 

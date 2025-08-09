@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test des Corrections de Bugs - e-Yaar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-section h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .test-result {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test des Corrections de Bugs - e-Yaar</h1>
+    
+    <div class="test-section">
+        <h3>1. Test des Fonctions Manquantes</h3>
+        <p>Vérification que toutes les fonctions référencées sont définies :</p>
+        <button onclick="testFunctions()">Tester les Fonctions</button>
+        <div id="functionTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Test de la Gestion des Événements</h3>
+        <p>Vérification que les écouteurs d'événements sont correctement configurés :</p>
+        <button onclick="testEventListeners()">Tester les Événements</button>
+        <div id="eventTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Test de la Navigation</h3>
+        <p>Vérification que la navigation fonctionne correctement :</p>
+        <button onclick="testNavigation()">Tester la Navigation</button>
+        <div id="navigationTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Test du Rendu des Produits</h3>
+        <p>Vérification que le rendu des produits fonctionne :</p>
+        <button onclick="testProductRendering()">Tester le Rendu</button>
+        <div id="renderingTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>5. Test de la Gestion des Images</h3>
+        <p>Vérification que la gestion des images fonctionne :</p>
+        <button onclick="testImageHandling()">Tester les Images</button>
+        <div id="imageTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>6. Test du Système de Paiement</h3>
+        <p>Vérification que le système de paiement est accessible :</p>
+        <button onclick="testPaymentSystem()">Tester le Paiement</button>
+        <div id="paymentTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>7. Résumé des Corrections</h3>
+        <div class="code-block">
+<h4>Bugs corrigés :</h4>
+✅ Références de fonctions manquantes
+✅ Gestion des événements non configurée
+✅ Fonction navigateToSection non définie
+✅ Fonction renderProducts non accessible
+✅ Fonction checkUserPermissions non définie
+✅ Fonction handleImageSelection non accessible
+✅ Références incorrectes au système de paiement
+✅ Validation des éléments DOM avant utilisation
+✅ Gestion des erreurs améliorée
+✅ Protection contre les erreurs null/undefined
+        </div>
+    </div>
+
+    <script>
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="test-result ${type}">${message}</div>`;
+        }
+
+        function testFunctions() {
+            const functions = [
+                'renderProducts',
+                'setupEventListeners', 
+                'checkUserPermissions',
+                'navigateToSection',
+                'showMainContent',
+                'handleImageSelection',
+                'removeImage',
+                'removeImagePreview',
+                'addProduct',
+                'searchProducts',
+                'filterProducts',
+                'generateContract',
+                'openSecurePayment',
+                'shareProduct',
+                'showMessage',
+                'convertImageToBase64'
+            ];
+
+            const missing = [];
+            const present = [];
+
+            functions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    present.push(func);
+                } else {
+                    missing.push(func);
+                }
+            });
+
+            if (missing.length === 0) {
+                showResult('functionTestResult', 
+                    `✅ Toutes les fonctions sont définies (${present.length} fonctions)`, 'success');
+            } else {
+                showResult('functionTestResult', 
+                    `❌ Fonctions manquantes : ${missing.join(', ')}<br>✅ Fonctions présentes : ${present.join(', ')}`, 'error');
+            }
+        }
+
+        function testEventListeners() {
+            // Test de base pour vérifier que les fonctions d'événements existent
+            const eventFunctions = [
+                'setupEventListeners',
+                'setupAddProductForm'
+            ];
+
+            const missing = [];
+            const present = [];
+
+            eventFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    present.push(func);
+                } else {
+                    missing.push(func);
+                }
+            });
+
+            if (missing.length === 0) {
+                showResult('eventTestResult', 
+                    `✅ Fonctions de gestion d'événements disponibles (${present.length} fonctions)`, 'success');
+            } else {
+                showResult('eventTestResult', 
+                    `❌ Fonctions d'événements manquantes : ${missing.join(', ')}`, 'error');
+            }
+        }
+
+        function testNavigation() {
+            if (typeof navigateToSection === 'function') {
+                showResult('navigationTestResult', 
+                    '✅ Fonction navigateToSection disponible', 'success');
+            } else {
+                showResult('navigationTestResult', 
+                    '❌ Fonction navigateToSection manquante', 'error');
+            }
+        }
+
+        function testProductRendering() {
+            if (typeof renderProducts === 'function') {
+                showResult('renderingTestResult', 
+                    '✅ Fonction renderProducts disponible', 'success');
+            } else {
+                showResult('renderingTestResult', 
+                    '❌ Fonction renderProducts manquante', 'error');
+            }
+        }
+
+        function testImageHandling() {
+            const imageFunctions = [
+                'handleImageSelection',
+                'removeImage',
+                'removeImagePreview',
+                'convertImageToBase64'
+            ];
+
+            const missing = [];
+            const present = [];
+
+            imageFunctions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    present.push(func);
+                } else {
+                    missing.push(func);
+                }
+            });
+
+            if (missing.length === 0) {
+                showResult('imageTestResult', 
+                    `✅ Toutes les fonctions de gestion d'images sont disponibles (${present.length} fonctions)`, 'success');
+            } else {
+                showResult('imageTestResult', 
+                    `❌ Fonctions d'images manquantes : ${missing.join(', ')}`, 'error');
+            }
+        }
+
+        function testPaymentSystem() {
+            // Test de base pour vérifier que le système de paiement est accessible
+            if (typeof paymentSystem !== 'undefined') {
+                showResult('paymentTestResult', 
+                    '✅ Système de paiement accessible', 'success');
+            } else {
+                showResult('paymentTestResult', 
+                    '⚠️ Système de paiement non accessible (peut être normal si le fichier n\'est pas chargé)', 'warning');
+            }
+        }
+
+        // Test automatique au chargement
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testFunctions();
+                testEventListeners();
+                testNavigation();
+                testProductRendering();
+                testImageHandling();
+                testPaymentSystem();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

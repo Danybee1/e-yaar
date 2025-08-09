@@ -1,0 +1,2535 @@
+/*
+  e-Yaar - E-commerce Burkinabè Futuriste
+  Site web moderne avec partage sur réseaux sociaux et contrats électroniques
+  Les vendeurs peuvent publier des articles, les clients peuvent acheter via paiement mobile
+  Système de contrat électronique intégré avec envoi PDF sur Telegram
+*/
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>e-Yaar - E-commerce Burkinabè Futuriste</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="e-Yaar - E-commerce Burkinabè">
+    <meta property="og:description" content="Découvrez les meilleurs produits burkinabè">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=1200&q=80">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="auth-styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #FF8C42;
+            --accent-color: #FFD23F;
+            --dark-color: #2C3E50;
+            --light-color: #FFFFFF;
+            --background-color: #F8F9FA;
+            --text-color: #2C3E50;
+            --text-light: #6C757D;
+            --border-color: #E9ECEF;
+            --success-color: #28A745;
+            --danger-color: #DC3545;
+            --warning-color: #FFC107;
+            --info-color: #17A2B8;
+            --gradient-primary: linear-gradient(135deg, #FF6B35, #FF8C42);
+            --gradient-secondary: linear-gradient(135deg, #FF8C42, #FFD23F);
+            --shadow-primary: 0 4px 20px rgba(255, 107, 53, 0.15);
+            --shadow-secondary: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background-color);
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.8); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Header moderne style e-commerce */
+        header {
+            background: var(--light-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-secondary);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        /* Container principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Section héro */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 140, 66, 0.05) 100%);
+            border-radius: 12px;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Cartes modernes */
+        .card {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-secondary);
+        }
+
+        .card h2 {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Formulaire de contrat */
+        .contract-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light-color);
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        /* Boutons modernes */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-secondary);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Grille de produits */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-card);
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-secondary);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.02);
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Boutons de partage */
+        .share-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .share-facebook { background: #1877F2; }
+        .share-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .share-telegram { background: #0088cc; }
+        .share-tiktok { background: #000000; }
+        .share-twitter { background: #1DA1F2; }
+
+        .share-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Modal moderne */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: var(--shadow-secondary);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+
+        /* Messages */
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .message.error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* Barre de recherche et filtres */
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px 0 0 8px;
+            font-size: 0.95rem;
+            background: var(--light-color);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            padding: 0.8rem 1.2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filters select {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light-color);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .filters select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Système de tri Aliexpress */
+        .sorting-system {
+            background: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .sorting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sorting-title {
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sorting-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--light-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .sort-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .sort-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .sort-btn i {
+            font-size: 0.8rem;
+        }
+
+        .advanced-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .price-range {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .price-range input {
+            width: 80px;
+        }
+
+        .price-range span {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        /* Badges de produits */
+        .product-badges {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .badge-hot {
+            background: linear-gradient(45deg, #ff6b35, #ff8c42);
+        }
+
+        .badge-new {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .badge-sale {
+            background: linear-gradient(45deg, #dc3545, #e74c3c);
+        }
+
+        .badge-premium {
+            background: linear-gradient(45deg, #ffc107, #ffd23f);
+            color: #2c3e50;
+        }
+
+        .badge-verified {
+            background: linear-gradient(45deg, #17a2b8, #20c997);
+        }
+
+        /* Évaluations et avis */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.1rem;
+        }
+
+        .star {
+            color: #ffc107;
+            font-size: 0.8rem;
+        }
+
+        .star.empty {
+            color: #e9ecef;
+        }
+
+        .rating-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .review-count {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* Statistiques de vente */
+        .sales-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .sales-count {
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
+        .stock-status {
+            color: var(--warning-color);
+            font-weight: 500;
+        }
+
+        /* Position relative pour les badges */
+        .product-card {
+            position: relative;
+        }
+
+        /* Zone de téléchargement d'images */
+        #imageUploadArea {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--background-color);
+        }
+
+        #imageUploadArea:hover {
+            border-color: var(--primary-color);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        #imageUploadArea.dragover {
+            border-color: var(--primary-color);
+            background: rgba(255, 107, 53, 0.1);
+            transform: scale(1.02);
+        }
+
+        #imagePreview {
+            margin-top: 1rem;
+        }
+
+        #previewImg {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+        }
+
+        .remove-image-btn {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-image-btn:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .contract-form {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-container {
+                padding: 0 1rem;
+            }
+
+            .search-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+    </style>
+</head>
+<body>
+
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                e-Yaar
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="#products"><i class="fas fa-store"></i> Produits</a></li>
+                    <li><a href="#become-seller"><i class="fas fa-user-plus"></i> Devenir Vendeur</a></li>
+                    <li><a href="#" onclick="authUI.showLoginForm()">Connexion</a></li>
+                    <li><a href="#" onclick="authUI.showRegisterForm()" class="btn btn-primary">Inscription</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Section Héro -->
+        <section class="hero-section" id="home">
+            <h1 class="hero-title">e-Yaar</h1>
+            <p class="hero-subtitle">L'E-commerce Burkinabè du Futur</p>
+            <p>Découvrez les meilleurs produits locaux et internationaux</p>
+        </section>
+
+        <!-- Section Devenir Vendeur -->
+        <section class="card" id="become-seller">
+            <h2><i class="fas fa-user-plus"></i> Devenir Vendeur sur e-Yaar</h2>
+            <p>Rejoignez notre communauté de vendeurs et commencez à vendre vos produits en ligne. Accédez à des millions de clients au Burkina Faso.</p>
+            
+            <!-- Avantages pour les vendeurs -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: rgba(255, 107, 53, 0.1); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                    <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h3>Large Audience</h3>
+                    <p>Accédez à des millions de clients potentiels au Burkina Faso</p>
+                </div>
+                <div style="background: rgba(40, 167, 69, 0.1); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                    <i class="fas fa-mobile-alt" style="font-size: 2rem; color: var(--success-color); margin-bottom: 1rem;"></i>
+                    <h3>Paiement Mobile</h3>
+                    <p>Recevez vos paiements via Orange Money, Moov Money, Telecel</p>
+                </div>
+                <div style="background: rgba(23, 162, 184, 0.1); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                    <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--info-color); margin-bottom: 1rem;"></i>
+                    <h3>Croissance</h3>
+                    <p>Développez votre activité avec nos outils de vente</p>
+                </div>
+            </div>
+
+            <!-- Formulaire de demande pour devenir vendeur -->
+            <div id="becomeSellerForm" style="display: none;">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">
+                    <i class="fas fa-file-contract"></i> Contrat Électronique Vendeur
+                </h3>
+                <p>Pour publier vos articles, veuillez remplir ce contrat électronique. Une copie PDF sera envoyée sur Telegram.</p>
+                
+                <form id="contractForm" class="contract-form">
+                    <div class="form-group">
+                        <label for="merchantName">Nom et Prénom *</label>
+                        <input type="text" id="merchantName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="merchantEmail">Email *</label>
+                        <input type="email" id="merchantEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="merchantPhone">Téléphone *</label>
+                        <input type="tel" id="merchantPhone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="merchantAddress">Adresse complète *</label>
+                        <textarea id="merchantAddress" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="companyName">Nom de l'entreprise</label>
+                        <input type="text" id="companyName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="businessType">Type d'activité *</label>
+                        <select id="businessType" required>
+                            <option value="">Sélectionnez...</option>
+                            <option value="Vêtements">Vêtements</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Alimentation">Alimentation</option>
+                            <option value="Artisanat">Artisanat</option>
+                            <option value="Beauté">Beauté</option>
+                            <option value="Loisirs">Loisirs</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taxId">Numéro d'identification fiscale</label>
+                        <input type="text" id="taxId">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bankAccount">Compte bancaire</label>
+                        <input type="text" id="bankAccount">
+                    </div>
+                </form>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="generateContract()">
+                        <i class="fas fa-file-pdf"></i> Générer et Envoyer le Contrat
+                    </button>
+                </div>
+                
+                <div id="contractMessage" class="message"></div>
+            </div>
+
+            <!-- Bouton pour commencer le processus -->
+            <div id="startProcessBtn" style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="startBecomeSellerProcess()">
+                    <i class="fas fa-rocket"></i> Commencer le Processus
+                </button>
+            </div>
+        </section>
+
+        <!-- Section Ajout de Produits (Réservée aux Vendeurs) -->
+        <section class="card" id="products">
+            <h2><i class="fas fa-plus-circle"></i> Publier un Article</h2>
+            
+            <!-- Contenu pour les vendeurs -->
+            <div id="sellerContent" style="display: none;">
+                <form id="addProductForm" class="contract-form">
+                    <div class="form-group">
+                        <label for="productTitle">Nom de l'article *</label>
+                        <input type="text" id="productTitle" required maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productPrice">Prix (FCFA) *</label>
+                        <input type="number" id="productPrice" required min="100" max="1000000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productImage">Image de l'article *</label>
+                        <div style="position: relative;">
+                            <input type="file" id="productImage" accept="image/*" required style="display: none;">
+                            <div id="imageUploadArea" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--background-color);">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                                <p style="color: var(--text-light); margin-bottom: 0.5rem;">Cliquez pour sélectionner une image</p>
+                                <p style="font-size: 0.8rem; color: var(--text-light);">ou glissez-déposez votre image ici</p>
+                            </div>
+                            <div id="imagePreview" style="display: none; margin-top: 1rem;">
+                                <img id="previewImg" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <button type="button" onclick="removeImage()" class="remove-image-btn">
+                                    <i class="fas fa-trash"></i> Supprimer l'image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">Description</label>
+                        <textarea id="productDescription" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productCategory">Catégorie *</label>
+                        <select id="productCategory" required>
+                            <option value="">Sélectionnez...</option>
+                            <option value="Vêtements">Vêtements</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Alimentation">Alimentation</option>
+                            <option value="Artisanat">Artisanat</option>
+                            <option value="Beauté">Beauté</option>
+                            <option value="Loisirs">Loisirs</option>
+                        </select>
+                    </div>
+                </form>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-secondary" onclick="addProduct()">
+                        <i class="fas fa-upload"></i> Publier l'Article
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenu pour les non-vendeurs -->
+            <div id="nonSellerContent" style="display: none;">
+                <div style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-store" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 2rem;"></i>
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Espace Vendeur</h3>
+                    <p style="color: var(--text-light); margin-bottom: 2rem; font-size: 1.1rem;">
+                        Pour publier des articles et vendre vos produits, vous devez devenir vendeur.
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="navigateToSection('become-seller')">
+                            <i class="fas fa-user-plus"></i> Devenir Vendeur
+                        </button>
+                        <button class="btn btn-secondary" onclick="navigateToSection('products')">
+                            <i class="fas fa-shopping-cart"></i> Voir les Produits
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="productMessage" class="message"></div>
+        </section>
+
+        <!-- Section Produits -->
+        <section class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2><i class="fas fa-store"></i> Articles Disponibles</h2>
+                <span id="productCount" style="color: var(--text-light); font-size: 0.9rem;"></span>
+            </div>
+            
+            <!-- Système de tri Aliexpress -->
+            <div class="sorting-system">
+                <div class="sorting-header">
+                    <div class="sorting-title">
+                        <i class="fas fa-sort"></i>
+                        Trier par
+                    </div>
+                    <div class="sorting-options">
+                        <button class="sort-btn active" onclick="sortProducts('popularity')">
+                            <i class="fas fa-fire"></i> Popularité
+                        </button>
+                        <button class="sort-btn" onclick="sortProducts('newest')">
+                            <i class="fas fa-clock"></i> Nouveautés
+                        </button>
+                        <button class="sort-btn" onclick="sortProducts('price-low')">
+                            <i class="fas fa-sort-amount-down"></i> Prix croissant
+                        </button>
+                        <button class="sort-btn" onclick="sortProducts('price-high')">
+                            <i class="fas fa-sort-amount-up"></i> Prix décroissant
+                        </button>
+                        <button class="sort-btn" onclick="sortProducts('rating')">
+                            <i class="fas fa-star"></i> Évaluations
+                        </button>
+                        <button class="sort-btn" onclick="sortProducts('sales')">
+                            <i class="fas fa-chart-line"></i> Ventes
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filtres avancés -->
+                <div class="advanced-filters">
+                    <div class="filter-group">
+                        <label>Catégorie</label>
+                        <select id="categoryFilter" onchange="filterProducts()">
+                            <option value="">Toutes les catégories</option>
+                            <option value="Vêtements">Vêtements</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Alimentation">Alimentation</option>
+                            <option value="Artisanat">Artisanat</option>
+                            <option value="Beauté">Beauté</option>
+                            <option value="Loisirs">Loisirs</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Prix (FCFA)</label>
+                        <div class="price-range">
+                            <input type="number" id="minPrice" placeholder="Min" min="0">
+                            <span>-</span>
+                            <input type="number" id="maxPrice" placeholder="Max" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Évaluation minimum</label>
+                        <select id="ratingFilter" onchange="filterProducts()">
+                            <option value="">Toutes</option>
+                            <option value="4">4+ étoiles</option>
+                            <option value="3">3+ étoiles</option>
+                            <option value="2">2+ étoiles</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Statut du vendeur</label>
+                        <select id="sellerFilter" onchange="filterProducts()">
+                            <option value="">Tous</option>
+                            <option value="verified">Vendeurs vérifiés</option>
+                            <option value="premium">Vendeurs premium</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Disponibilité</label>
+                        <select id="availabilityFilter" onchange="filterProducts()">
+                            <option value="">Tous</option>
+                            <option value="in-stock">En stock</option>
+                            <option value="low-stock">Stock limité</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Barre de recherche -->
+            <div class="search-filters">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Rechercher un produit..." class="search-input">
+                    <button class="search-btn" onclick="searchProducts()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="filters">
+                    <button class="btn btn-secondary" onclick="clearAllFilters()">
+                        <i class="fas fa-times"></i> Effacer les filtres
+                    </button>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Chargement des produits...</p>
+            </div>
+            <div class="products-grid" id="productsList">
+                <!-- Les produits seront affichés ici -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal de Paiement Sécurisé -->
+    <!-- Le modal sera créé dynamiquement par le système de paiement -->
+
+    <script src="auth.js"></script>
+    <script src="auth-ui.js"></script>
+    <script src="payment-system.js"></script>
+    <script>
+        // Configuration
+        const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN'; // À remplacer par votre token
+        const TELEGRAM_CHAT_ID = '61002569';
+        
+        // Données des produits avec système de tri Aliexpress
+        let products = [
+            {
+                title: "T-shirt Faso Dan Fani",
+                price: 3500,
+                image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+                description: "T-shirt traditionnel burkinabè en coton",
+                category: "Vêtements",
+                rating: 4.8,
+                reviewCount: 156,
+                salesCount: 2340,
+                popularity: 95,
+                publishedAt: "2024-01-15T10:30:00Z",
+                sellerVerified: true,
+                sellerPremium: false,
+                stockStatus: "in-stock",
+                stockQuantity: 150,
+                badges: ["hot", "verified"]
+            },
+            {
+                title: "Sac à main artisanal",
+                price: 8000,
+                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+                description: "Sac en cuir traditionnel",
+                category: "Artisanat",
+                rating: 4.6,
+                reviewCount: 89,
+                salesCount: 567,
+                popularity: 78,
+                publishedAt: "2024-01-20T14:15:00Z",
+                sellerVerified: true,
+                sellerPremium: true,
+                stockStatus: "in-stock",
+                stockQuantity: 45,
+                badges: ["premium", "verified"]
+            },
+            {
+                title: "Sandales traditionnelles",
+                price: 5000,
+                image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+                description: "Sandales en cuir local",
+                category: "Vêtements",
+                rating: 4.3,
+                reviewCount: 203,
+                salesCount: 1890,
+                popularity: 82,
+                publishedAt: "2024-01-10T09:45:00Z",
+                sellerVerified: false,
+                sellerPremium: false,
+                stockStatus: "low-stock",
+                stockQuantity: 12,
+                badges: ["sale"]
+            },
+            {
+                title: "Smartphone Android",
+                price: 85000,
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80",
+                description: "Smartphone dernière génération",
+                category: "Électronique",
+                rating: 4.9,
+                reviewCount: 445,
+                salesCount: 1234,
+                popularity: 98,
+                publishedAt: "2024-01-25T16:20:00Z",
+                sellerVerified: true,
+                sellerPremium: true,
+                stockStatus: "in-stock",
+                stockQuantity: 78,
+                badges: ["new", "premium", "verified"]
+            },
+            {
+                title: "Huile de karité",
+                price: 2500,
+                image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=400&q=80",
+                description: "Huile naturelle pour la peau",
+                category: "Beauté",
+                rating: 4.7,
+                reviewCount: 312,
+                salesCount: 2890,
+                popularity: 91,
+                publishedAt: "2024-01-05T11:30:00Z",
+                sellerVerified: true,
+                sellerPremium: false,
+                stockStatus: "in-stock",
+                stockQuantity: 200,
+                badges: ["hot", "verified"]
+            },
+            {
+                title: "Pagne traditionnel",
+                price: 12000,
+                image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=400&q=80",
+                description: "Pagne coloré traditionnel",
+                category: "Vêtements",
+                rating: 4.4,
+                reviewCount: 178,
+                salesCount: 756,
+                popularity: 73,
+                publishedAt: "2024-01-18T13:00:00Z",
+                sellerVerified: false,
+                sellerPremium: false,
+                stockStatus: "in-stock",
+                stockQuantity: 89,
+                badges: []
+            },
+            {
+                title: "Bracelet en perles",
+                price: 1500,
+                image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=400&q=80",
+                description: "Bracelet artisanal en perles colorées",
+                category: "Artisanat",
+                rating: 4.2,
+                reviewCount: 67,
+                salesCount: 234,
+                popularity: 65,
+                publishedAt: "2024-01-22T15:30:00Z",
+                sellerVerified: true,
+                sellerPremium: false,
+                stockStatus: "in-stock",
+                stockQuantity: 120,
+                badges: ["new"]
+            },
+            {
+                title: "Tablette tactile",
+                price: 65000,
+                image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80",
+                description: "Tablette Android 10 pouces",
+                category: "Électronique",
+                rating: 4.5,
+                reviewCount: 234,
+                salesCount: 456,
+                popularity: 79,
+                publishedAt: "2024-01-12T10:15:00Z",
+                sellerVerified: true,
+                sellerPremium: true,
+                stockStatus: "low-stock",
+                stockQuantity: 8,
+                badges: ["premium", "verified"]
+            }
+        ];
+
+        let filteredProducts = [...products];
+        let currentProduct = null;
+        let currentSortMethod = 'popularity';
+        let currentFilters = {
+            category: '',
+            minPrice: '',
+            maxPrice: '',
+            rating: '',
+            seller: '',
+            availability: ''
+        };
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser le système de paiement sécurisé
+            if (typeof paymentSystem !== 'undefined') {
+                paymentSystem.init();
+            }
+
+            // Écouter les changements d'état d'authentification
+            document.addEventListener('authStateChanged', function(event) {
+                if (event.detail.type === 'login') {
+                    // Attendre un peu pour que l'interface se mette à jour
+                    setTimeout(() => {
+                        renderProducts();
+                        setupEventListeners();
+                        checkUserPermissions();
+                    }, 100);
+                }
+            });
+
+            // Vérifier si l'utilisateur est connecté
+            if (auth.isLoggedIn()) {
+                // Attendre que l'interface soit prête
+                setTimeout(() => {
+                    renderProducts();
+                    setupEventListeners();
+                    checkUserPermissions();
+                }, 100);
+            }
+        });
+
+        // Vérifier les permissions de l'utilisateur
+        function checkUserPermissions() {
+            const addProductSection = document.getElementById('products');
+            const sellerContent = document.getElementById('sellerContent');
+            const nonSellerContent = document.getElementById('nonSellerContent');
+            
+            if (addProductSection && sellerContent && nonSellerContent) {
+                if (auth.isMerchant()) {
+                    // Afficher le contenu vendeur
+                    sellerContent.style.display = 'block';
+                    nonSellerContent.style.display = 'none';
+                } else {
+                    // Afficher le contenu non-vendeur
+                    sellerContent.style.display = 'none';
+                    nonSellerContent.style.display = 'block';
+                }
+            }
+        }
+
+        // Fonction pour commencer le processus de devenir vendeur
+        function startBecomeSellerProcess() {
+            // Vérifier si l'utilisateur est connecté
+            if (!auth.isLoggedIn()) {
+                showMessage('contractMessage', 'Vous devez être connecté pour devenir vendeur', 'error');
+                authUI.showLoginForm();
+                return;
+            }
+
+            // Vérifier si l'utilisateur est déjà vendeur
+            if (auth.isMerchant()) {
+                showMessage('contractMessage', 'Vous êtes déjà vendeur !', 'success');
+                return;
+            }
+
+            // Afficher le formulaire de contrat
+            document.getElementById('becomeSellerForm').style.display = 'block';
+            document.getElementById('startProcessBtn').style.display = 'none';
+            
+            // Pré-remplir les champs avec les informations de l'utilisateur
+            const user = auth.getCurrentUser();
+            if (user) {
+                document.getElementById('merchantName').value = user.name || '';
+                document.getElementById('merchantEmail').value = user.email || '';
+                document.getElementById('merchantPhone').value = user.phone || '';
+            }
+        }
+
+        // Affichage des messages
+        function showMessage(elementId, message, type = 'success') {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.className = `message ${type}`;
+                element.style.display = 'block';
+                
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Conversion d'image en base64
+        function convertImageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('Erreur lors de la lecture du fichier'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Gestion de la sélection d'image
+        function handleImageSelection(file) {
+            if (!file) return;
+
+            // Validation du type de fichier
+            if (!file.type.startsWith('image/')) {
+                showMessage('productMessage', 'Veuillez sélectionner un fichier image valide', 'error');
+                return;
+            }
+
+            // Validation de la taille (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('productMessage', 'L\'image ne doit pas dépasser 5MB', 'error');
+                return;
+            }
+
+            // Affichage de la prévisualisation
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('imageUploadArea').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Suppression de l'image
+        function removeImage() {
+            document.getElementById('productImage').value = '';
+            removeImagePreview();
+        }
+
+        // Suppression de la prévisualisation
+        function removeImagePreview() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageUploadArea').style.display = 'block';
+            document.getElementById('previewImg').src = '';
+        }
+
+        // Rendu des produits avec système Aliexpress
+        function renderProducts(productsToRender = null) {
+            const productsList = document.getElementById('productsList');
+            const loading = document.getElementById('loading');
+            const productCount = document.getElementById('productCount');
+            
+            if (!productsList) return;
+            
+            if (loading) loading.style.display = 'none';
+            productsList.innerHTML = '';
+            
+            const productsToShow = productsToRender || filteredProducts;
+            
+            // Mise à jour du compteur
+            if (productCount) {
+                productCount.textContent = `${productsToShow.length} produit${productsToShow.length > 1 ? 's' : ''} trouvé${productsToShow.length > 1 ? 's' : ''}`;
+            }
+            
+            if (productsToShow.length === 0) {
+                productsList.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>Aucun produit trouvé</h3>
+                        <p>Essayez de modifier vos critères de recherche</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsToShow.forEach((product, idx) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                // Générer les badges
+                const badgesHtml = generateProductBadges(product);
+                
+                // Générer les étoiles
+                const starsHtml = generateStars(product.rating);
+                
+                // Générer les statistiques de vente
+                const salesStatsHtml = generateSalesStats(product);
+                
+                productCard.innerHTML = `
+                    ${badgesHtml}
+                    <img src="${product.image}" alt="${product.title}" class="product-image" 
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVDMTEwLjQ1NyA3NSAxMTkgODMuNTQzIDEyMCA5NEMxMTkgMTA0LjQ1NyAxMTAuNDU3IDExMyAxMDAgMTEzQzg5LjU0MyAxMTMgODEgMTA0LjQ1NyA4MSA5NEM4MSA4My41NDMgODkuNTQzIDc1IDEwMCA3NVoiIGZpbGw9IiM5M0FCM0MiLz4KPC9zdmc+Cg=='>
+                    
+                    <h3 class="product-title">${product.title}</h3>
+                    
+                    <!-- Évaluations et avis -->
+                    <div class="product-rating">
+                        <div class="stars">
+                            ${starsHtml}
+                        </div>
+                        <span class="rating-text">${product.rating}</span>
+                        <span class="review-count">(${product.reviewCount})</span>
+                    </div>
+                    
+                    <!-- Statistiques de vente -->
+                    ${salesStatsHtml}
+                    
+                    <p style="color: var(--text-light); margin-bottom: 0.5rem; font-size: 0.9rem;">${product.description || ''}</p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <span style="color: var(--primary-color); font-size: 0.85rem; font-weight: 500; background: rgba(255, 107, 53, 0.1); padding: 0.2rem 0.5rem; border-radius: 4px;">${product.category}</span>
+                        ${product.sellerVerified ? '<span style="background: #17A2B8; color: white; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px;"><i class="fas fa-check-circle"></i> Vérifié</span>' : ''}
+                    </div>
+                    
+                    ${product.sellerName ? `<p style="color: var(--text-light); font-size: 0.8rem; margin-bottom: 0.5rem;"><i class="fas fa-store"></i> Vendu par: ${product.sellerName}</p>` : ''}
+                    
+                    <div class="product-price">${product.price.toLocaleString()} FCFA</div>
+                    
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-small" onclick="openSecurePayment(${idx})">
+                            <i class="fas fa-shield-alt"></i> Paiement Sécurisé
+                        </button>
+                        <button class="btn btn-secondary btn-small" onclick="shareProduct(${idx})">
+                            <i class="fas fa-share"></i> Partager
+                        </button>
+                    </div>
+                    
+                    <div class="share-buttons" id="shareButtons${idx}" style="display: none;">
+                        <button class="share-btn share-facebook" onclick="shareOnFacebook(${idx})">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="share-btn share-instagram" onclick="shareOnInstagram(${idx})">
+                            <i class="fab fa-instagram"></i>
+                        </button>
+                        <button class="share-btn share-telegram" onclick="shareOnTelegram(${idx})">
+                            <i class="fab fa-telegram-plane"></i>
+                        </button>
+                        <button class="share-btn share-tiktok" onclick="shareOnTikTok(${idx})">
+                            <i class="fab fa-tiktok"></i>
+                        </button>
+                        <button class="share-btn share-twitter" onclick="shareOnTwitter(${idx})">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                    </div>
+                `;
+                productsList.appendChild(productCard);
+            });
+        }
+
+        // Générer les badges de produits
+        function generateProductBadges(product) {
+            if (!product.badges || product.badges.length === 0) return '';
+            
+            const badgeLabels = {
+                'hot': 'Tendance',
+                'new': 'Nouveau',
+                'sale': 'Promo',
+                'premium': 'Premium',
+                'verified': 'Vérifié'
+            };
+            
+            const badgeClasses = {
+                'hot': 'badge-hot',
+                'new': 'badge-new',
+                'sale': 'badge-sale',
+                'premium': 'badge-premium',
+                'verified': 'badge-verified'
+            };
+            
+            const badgesHtml = product.badges.map(badge => {
+                const label = badgeLabels[badge] || badge;
+                const className = badgeClasses[badge] || 'badge';
+                return `<span class="badge ${className}">${label}</span>`;
+            }).join('');
+            
+            return `<div class="product-badges">${badgesHtml}</div>`;
+        }
+
+        // Générer les étoiles d'évaluation
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHtml = '';
+            
+            // Étoiles pleines
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star star"></i>';
+            }
+            
+            // Demi-étoile
+            if (hasHalfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt star"></i>';
+            }
+            
+            // Étoiles vides
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<i class="far fa-star star empty"></i>';
+            }
+            
+            return starsHtml;
+        }
+
+        // Générer les statistiques de vente
+        function generateSalesStats(product) {
+            const stockText = product.stockStatus === 'low-stock' ? 'Stock limité' : 'En stock';
+            const stockClass = product.stockStatus === 'low-stock' ? 'stock-status' : 'sales-count';
+            
+            return `
+                <div class="sales-stats">
+                    <span class="sales-count">${product.salesCount.toLocaleString()} ventes</span>
+                    <span class="${stockClass}">${stockText}</span>
+                </div>
+            `;
+        }
+
+        // Ajout d'un produit
+        async function addProduct() {
+            // Vérifier si l'utilisateur est connecté
+            if (!auth.isLoggedIn()) {
+                showMessage('productMessage', 'Vous devez être connecté pour publier un article', 'error');
+                return;
+            }
+
+            // Vérifier si l'utilisateur est un vendeur
+            if (!auth.isMerchant()) {
+                showMessage('productMessage', 'Seuls les vendeurs peuvent publier des articles. Devenez vendeur en signant un contrat.', 'error');
+                return;
+            }
+
+            const title = document.getElementById('productTitle').value.trim();
+            const price = parseInt(document.getElementById('productPrice').value, 10);
+            const imageFile = document.getElementById('productImage').files[0];
+            const description = document.getElementById('productDescription').value.trim();
+            const category = document.getElementById('productCategory').value;
+
+            // Validation
+            if (!title || title.length < 3) {
+                showMessage('productMessage', 'Le nom de l\'article doit contenir au moins 3 caractères', 'error');
+                return;
+            }
+
+            if (!price || price < 100 || price > 1000000) {
+                showMessage('productMessage', 'Le prix doit être entre 100 et 1 000 000 FCFA', 'error');
+                return;
+            }
+
+            if (!imageFile) {
+                showMessage('productMessage', 'Veuillez sélectionner une image', 'error');
+                return;
+            }
+
+            if (!category) {
+                showMessage('productMessage', 'Veuillez sélectionner une catégorie', 'error');
+                return;
+            }
+
+            // Validation du type de fichier
+            if (!imageFile.type.startsWith('image/')) {
+                showMessage('productMessage', 'Veuillez sélectionner un fichier image valide', 'error');
+                return;
+            }
+
+            // Validation de la taille (max 5MB)
+            if (imageFile.size > 5 * 1024 * 1024) {
+                showMessage('productMessage', 'L\'image ne doit pas dépasser 5MB', 'error');
+                return;
+            }
+
+            try {
+                // Conversion de l'image en base64
+                const imageDataUrl = await convertImageToBase64(imageFile);
+                
+                // Ajout du produit avec les informations du vendeur et système Aliexpress
+                const user = auth.getCurrentUser();
+                const newProduct = { 
+                    title, 
+                    price, 
+                    image: imageDataUrl, 
+                    description, 
+                    category,
+                    sellerId: user.id,
+                    sellerName: user.name,
+                    publishedAt: new Date().toISOString(),
+                    // Nouvelles propriétés pour le système Aliexpress
+                    rating: 0,
+                    reviewCount: 0,
+                    salesCount: 0,
+                    popularity: Math.floor(Math.random() * 30) + 50, // Popularité aléatoire entre 50-80
+                    sellerVerified: user.verified || false,
+                    sellerPremium: user.premium || false,
+                    stockStatus: "in-stock",
+                    stockQuantity: Math.floor(Math.random() * 100) + 50, // Stock aléatoire entre 50-150
+                    badges: []
+                };
+                products.unshift(newProduct);
+                filteredProducts = [...products];
+                renderProducts();
+                document.getElementById('addProductForm').reset();
+                removeImagePreview();
+                showMessage('productMessage', 'Produit ajouté avec succès !');
+            } catch (error) {
+                console.error('Erreur lors du traitement de l\'image:', error);
+                showMessage('productMessage', 'Erreur lors du traitement de l\'image', 'error');
+            }
+        }
+
+        // Système de tri Aliexpress
+        function sortProducts(sortMethod) {
+            currentSortMethod = sortMethod;
+            
+            // Mettre à jour l'interface des boutons de tri
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Appliquer le tri
+            applySortingAndFiltering();
+        }
+
+        // Fonction de tri selon différents critères
+        function applySorting() {
+            const productsToSort = [...filteredProducts];
+            
+            switch(currentSortMethod) {
+                case 'popularity':
+                    productsToSort.sort((a, b) => b.popularity - a.popularity);
+                    break;
+                case 'newest':
+                    productsToSort.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+                    break;
+                case 'price-low':
+                    productsToSort.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    productsToSort.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    productsToSort.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'sales':
+                    productsToSort.sort((a, b) => b.salesCount - a.salesCount);
+                    break;
+                default:
+                    productsToSort.sort((a, b) => b.popularity - a.popularity);
+            }
+            
+            return productsToSort;
+        }
+
+        // Recherche de produits
+        function searchProducts() {
+            filterProducts();
+        }
+
+        // Filtrage avancé des produits
+        function filterProducts() {
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            const ratingFilter = document.getElementById('ratingFilter');
+            const sellerFilter = document.getElementById('sellerFilter');
+            const availabilityFilter = document.getElementById('availabilityFilter');
+            
+            if (!searchInput) return;
+            
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const categoryValue = categoryFilter ? categoryFilter.value : '';
+            const minPrice = minPriceInput ? parseInt(minPriceInput.value) || 0 : 0;
+            const maxPrice = maxPriceInput ? parseInt(maxPriceInput.value) || Infinity : Infinity;
+            const ratingValue = ratingFilter ? parseFloat(ratingFilter.value) || 0 : 0;
+            const sellerValue = sellerFilter ? sellerFilter.value : '';
+            const availabilityValue = availabilityFilter ? availabilityFilter.value : '';
+
+            // Mettre à jour les filtres actuels
+            currentFilters = {
+                category: categoryValue,
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+                rating: ratingValue,
+                seller: sellerValue,
+                availability: availabilityValue
+            };
+
+            filteredProducts = products.filter(product => {
+                // Filtre par recherche
+                const matchesSearch = !searchTerm || 
+                    product.title.toLowerCase().includes(searchTerm) ||
+                    (product.description && product.description.toLowerCase().includes(searchTerm)) ||
+                    product.category.toLowerCase().includes(searchTerm);
+
+                // Filtre par catégorie
+                const matchesCategory = !categoryValue || product.category === categoryValue;
+
+                // Filtre par prix
+                const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
+
+                // Filtre par évaluation
+                const matchesRating = product.rating >= ratingValue;
+
+                // Filtre par statut du vendeur
+                let matchesSeller = true;
+                if (sellerValue === 'verified') {
+                    matchesSeller = product.sellerVerified;
+                } else if (sellerValue === 'premium') {
+                    matchesSeller = product.sellerPremium;
+                }
+
+                // Filtre par disponibilité
+                let matchesAvailability = true;
+                if (availabilityValue === 'in-stock') {
+                    matchesAvailability = product.stockStatus === 'in-stock';
+                } else if (availabilityValue === 'low-stock') {
+                    matchesAvailability = product.stockStatus === 'low-stock';
+                }
+
+                return matchesSearch && matchesCategory && matchesPrice && matchesRating && matchesSeller && matchesAvailability;
+            });
+
+            applySortingAndFiltering();
+        }
+
+        // Appliquer le tri et le filtrage
+        function applySortingAndFiltering() {
+            const sortedProducts = applySorting();
+            renderProducts(sortedProducts);
+        }
+
+        // Effacer tous les filtres
+        function clearAllFilters() {
+            // Réinitialiser les champs de saisie
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            const ratingFilter = document.getElementById('ratingFilter');
+            const sellerFilter = document.getElementById('sellerFilter');
+            const availabilityFilter = document.getElementById('availabilityFilter');
+            
+            if (searchInput) searchInput.value = '';
+            if (categoryFilter) categoryFilter.value = '';
+            if (minPriceInput) minPriceInput.value = '';
+            if (maxPriceInput) maxPriceInput.value = '';
+            if (ratingFilter) ratingFilter.value = '';
+            if (sellerFilter) sellerFilter.value = '';
+            if (availabilityFilter) availabilityFilter.value = '';
+
+            // Réinitialiser les filtres
+            currentFilters = {
+                category: '',
+                minPrice: '',
+                maxPrice: '',
+                rating: '',
+                seller: '',
+                availability: ''
+            };
+
+            // Réinitialiser le tri
+            currentSortMethod = 'popularity';
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const popularityBtn = document.querySelector('.sort-btn[onclick*="popularity"]');
+            if (popularityBtn) popularityBtn.classList.add('active');
+
+            // Réappliquer le filtrage
+            filteredProducts = [...products];
+            applySortingAndFiltering();
+        }
+
+        // Génération et envoi du contrat
+        async function generateContract() {
+            // Vérifier si l'utilisateur est connecté
+            if (!auth.isLoggedIn()) {
+                showMessage('contractMessage', 'Vous devez être connecté pour générer un contrat', 'error');
+                return;
+            }
+
+            const form = document.getElementById('contractForm');
+            const formData = new FormData(form);
+            
+            // Validation
+            const requiredFields = ['merchantName', 'merchantEmail', 'merchantPhone', 'merchantAddress', 'businessType'];
+            for (let field of requiredFields) {
+                const element = document.getElementById(field);
+                if (!element || !element.value.trim()) {
+                    showMessage('contractMessage', 'Veuillez remplir tous les champs obligatoires', 'error');
+                    return;
+                }
+            }
+
+            try {
+                // Création du PDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // En-tête
+                doc.setFontSize(20);
+                doc.setTextColor(255, 107, 53);
+                doc.text('e-Yaar - Contrat Vendeur', 20, 30);
+                
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, 20, 50);
+                doc.text(`Contrat N°: ${Date.now()}`, 20, 60);
+                
+                // Informations du vendeur
+                doc.setFontSize(14);
+                doc.setTextColor(255, 107, 53);
+                doc.text('Informations du Vendeur:', 20, 80);
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Nom et Prénom: ${document.getElementById('merchantName').value}`, 20, 95);
+                doc.text(`Email: ${document.getElementById('merchantEmail').value}`, 20, 105);
+                doc.text(`Téléphone: ${document.getElementById('merchantPhone').value}`, 20, 115);
+                doc.text(`Adresse: ${document.getElementById('merchantAddress').value}`, 20, 125);
+                doc.text(`Entreprise: ${document.getElementById('companyName').value || 'Non spécifié'}`, 20, 135);
+                doc.text(`Type d'activité: ${document.getElementById('businessType').value}`, 20, 145);
+                doc.text(`NIF: ${document.getElementById('taxId').value || 'Non spécifié'}`, 20, 155);
+                doc.text(`Compte bancaire: ${document.getElementById('bankAccount').value || 'Non spécifié'}`, 20, 165);
+                
+                // Conditions
+                doc.setFontSize(14);
+                doc.setTextColor(255, 107, 53);
+                doc.text('Conditions du Contrat:', 20, 185);
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                const conditions = [
+                    '1. Le vendeur s\'engage à fournir des produits de qualité',
+                    '2. e-Yaar prend 5% de commission sur chaque vente',
+                    '3. Les paiements sont effectués via mobile money',
+                    '4. La livraison est à la charge du vendeur',
+                    '5. Ce contrat est valable pour une durée d\'un an'
+                ];
+                
+                conditions.forEach((condition, index) => {
+                    doc.text(condition, 20, 200 + (index * 8));
+                });
+                
+                // Signature
+                doc.setFontSize(12);
+                doc.setTextColor(255, 107, 53);
+                doc.text('Signature du Vendeur:', 20, 250);
+                doc.line(20, 255, 80, 255);
+                
+                // Génération du PDF
+                const pdfBlob = doc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                
+                // Envoi sur Telegram (simulation)
+                await sendToTelegram(pdfBlob);
+                
+                // Téléchargement local
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = `contrat_e-yaar_${Date.now()}.pdf`;
+                link.click();
+                
+                showMessage('contractMessage', 'Contrat généré et envoyé avec succès !');
+                form.reset();
+                
+            } catch (error) {
+                console.error('Erreur lors de la génération du contrat:', error);
+                showMessage('contractMessage', 'Erreur lors de la génération du contrat', 'error');
+            }
+        }
+
+        // Envoi sur Telegram (simulation)
+        async function sendToTelegram(pdfBlob) {
+            // Note: Pour un vrai envoi, vous devrez configurer un bot Telegram
+            console.log('Envoi du contrat sur Telegram...');
+            console.log('Chat ID:', TELEGRAM_CHAT_ID);
+            console.log('Fichier PDF généré');
+            
+            // Simulation d'envoi réussi
+            return new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        // Paiement sécurisé
+        function openSecurePayment(idx) {
+            // Vérifier si l'utilisateur est connecté
+            if (!auth.isLoggedIn()) {
+                showMessage('productMessage', 'Vous devez être connecté pour effectuer un achat', 'error');
+                return;
+            }
+
+            if (idx >= 0 && idx < products.length) {
+                const product = products[idx];
+                // Utiliser le nouveau système de paiement sécurisé
+                if (typeof paymentSystem !== 'undefined') {
+                    paymentSystem.openSecurePayment(product);
+                } else {
+                    showMessage('productMessage', 'Système de paiement non disponible', 'error');
+                }
+            }
+        }
+
+        // Partage sur les réseaux sociaux
+        function shareProduct(idx) {
+            const shareButtons = document.getElementById(`shareButtons${idx}`);
+            if (shareButtons) {
+                shareButtons.style.display = shareButtons.style.display === 'flex' ? 'none' : 'flex';
+            }
+        }
+
+        function shareOnFacebook(idx) {
+            const product = products[idx];
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(`Découvrez ${product.title} sur e-Yaar pour seulement ${product.price.toLocaleString()} FCFA !`);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
+        }
+
+        function shareOnInstagram(idx) {
+            const product = products[idx];
+            const text = `Découvrez ${product.title} sur e-Yaar pour seulement ${product.price.toLocaleString()} FCFA ! #eYaar #Ecommerce`;
+            // Instagram ne permet pas le partage direct via URL, on copie le texte
+            navigator.clipboard.writeText(text);
+            showMessage('productMessage', 'Texte copié ! Collez-le dans votre story Instagram.', 'success');
+        }
+
+        function shareOnTelegram(idx) {
+            const product = products[idx];
+            const text = encodeURIComponent(`Découvrez ${product.title} sur e-Yaar pour seulement ${product.price.toLocaleString()} FCFA !`);
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+        }
+
+        function shareOnTikTok(idx) {
+            const product = products[idx];
+            const text = `Découvrez ${product.title} sur e-Yaar pour seulement ${product.price.toLocaleString()} FCFA ! #eYaar #Ecommerce`;
+            navigator.clipboard.writeText(text);
+            showMessage('productMessage', 'Texte copié ! Utilisez-le dans votre vidéo TikTok.', 'success');
+        }
+
+        function shareOnTwitter(idx) {
+            const product = products[idx];
+            const text = encodeURIComponent(`Découvrez ${product.title} sur e-Yaar pour seulement ${product.price.toLocaleString()} FCFA ! #eYaar #Ecommerce`);
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+
+        // Configuration des événements
+        function setupEventListeners() {
+            // Gestion du téléchargement d'images
+            const imageInput = document.getElementById('productImage');
+            const imageUploadArea = document.getElementById('imageUploadArea');
+
+            if (imageUploadArea && imageInput) {
+                // Clic sur la zone de téléchargement
+                imageUploadArea.addEventListener('click', () => {
+                    imageInput.click();
+                });
+
+                // Changement de fichier sélectionné
+                imageInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleImageSelection(file);
+                    }
+                });
+
+                // Glisser-déposer
+                imageUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    imageUploadArea.classList.add('dragover');
+                });
+
+                imageUploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    imageUploadArea.classList.remove('dragover');
+                });
+
+                imageUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    imageUploadArea.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        imageInput.files = files;
+                        handleImageSelection(files[0]);
+                    }
+                });
+            }
+
+            // Soumission du formulaire de produit
+            const addProductForm = document.getElementById('addProductForm');
+            if (addProductForm) {
+                addProductForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addProduct();
+                });
+            }
+
+            // Soumission du formulaire de contrat
+            const contractForm = document.getElementById('contractForm');
+            if (contractForm) {
+                contractForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    generateContract();
+                });
+            }
+
+            // Recherche en temps réel
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    filterProducts();
+                });
+
+                // Recherche avec Entrée
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchProducts();
+                    }
+                });
+            }
+
+            // Filtres avancés en temps réel
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            
+            if (minPriceInput) {
+                minPriceInput.addEventListener('input', function() {
+                    filterProducts();
+                });
+            }
+            
+            if (maxPriceInput) {
+                maxPriceInput.addEventListener('input', function() {
+                    filterProducts();
+                });
+            }
+
+            // Navigation
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('a[href^="#"]')) {
+                    e.preventDefault();
+                    const target = e.target.getAttribute('href').substring(1);
+                    navigateToSection(target);
+                }
+            });
+        }
+
+        // Navigation entre les sections
+        function navigateToSection(section) {
+            if (!auth.isLoggedIn()) {
+                authUI.showLoginForm();
+                return;
+            }
+
+            switch(section) {
+                case 'home':
+                    showMainContent();
+                    break;
+                case 'products':
+                    showMainContent();
+                    setTimeout(() => {
+                        const productsSection = document.getElementById('products');
+                        if (productsSection) {
+                            productsSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 100);
+                    break;
+                case 'contract':
+                    showMainContent();
+                    setTimeout(() => {
+                        const contractSection = document.getElementById('contract');
+                        if (contractSection) {
+                            contractSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 100);
+                    break;
+                case 'become-seller':
+                    showMainContent();
+                    setTimeout(() => {
+                        const becomeSellerSection = document.getElementById('become-seller');
+                        if (becomeSellerSection) {
+                            becomeSellerSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 100);
+                    break;
+                case 'merchant':
+                    if (auth.isMerchant()) {
+                        authUI.showMerchantSpace();
+                    } else {
+                        showMessage('general', 'Accès réservé aux vendeurs', 'error');
+                    }
+                    break;
+                case 'admin':
+                    if (auth.isAdmin()) {
+                        authUI.showAdmin();
+                    } else {
+                        showMessage('general', 'Accès non autorisé', 'error');
+                    }
+                    break;
+                default:
+                    showMainContent();
+            }
+        }
+
+        // Afficher le contenu principal
+        function showMainContent() {
+            // Vérifier si l'utilisateur est connecté
+            if (!auth.isLoggedIn()) {
+                authUI.showLoginForm();
+                return;
+            }
+
+            const mainContainer = document.querySelector('.main-container');
+            if (!mainContainer) return;
+            
+            // Vérifier si le contenu principal est déjà affiché
+            if (mainContainer.querySelector('.hero-section')) {
+                return; // Le contenu principal est déjà affiché
+            }
+            
+            // Afficher le contenu principal
+            mainContainer.innerHTML = `
+                <!-- Section Héro -->
+                <section class="hero-section" id="home">
+                    <h1 class="hero-title">e-Yaar</h1>
+                    <p class="hero-subtitle">L'E-commerce Burkinabè du Futur</p>
+                    <p>Découvrez les meilleurs produits locaux et internationaux</p>
+                </section>
+
+                <!-- Section Contrat Électronique -->
+                <section class="card" id="contract">
+                    <h2><i class="fas fa-file-contract"></i> Contrat Électronique Vendeur</h2>
+                    <p>Pour publier vos articles, veuillez remplir ce contrat électronique. Une copie PDF sera envoyée sur Telegram.</p>
+                    
+                    <form id="contractForm" class="contract-form">
+                        <div class="form-group">
+                            <label for="merchantName">Nom et Prénom *</label>
+                            <input type="text" id="merchantName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="merchantEmail">Email *</label>
+                            <input type="email" id="merchantEmail" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="merchantPhone">Téléphone *</label>
+                            <input type="tel" id="merchantPhone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="merchantAddress">Adresse complète *</label>
+                            <textarea id="merchantAddress" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="companyName">Nom de l'entreprise</label>
+                            <input type="text" id="companyName">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="businessType">Type d'activité *</label>
+                            <select id="businessType" required>
+                                <option value="">Sélectionnez...</option>
+                                <option value="Vêtements">Vêtements</option>
+                                <option value="Électronique">Électronique</option>
+                                <option value="Alimentation">Alimentation</option>
+                                <option value="Artisanat">Artisanat</option>
+                                <option value="Beauté">Beauté</option>
+                                <option value="Loisirs">Loisirs</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="taxId">Numéro d'identification fiscale</label>
+                            <input type="text" id="taxId">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bankAccount">Compte bancaire</label>
+                            <input type="text" id="bankAccount">
+                        </div>
+                    </form>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="generateContract()">
+                            <i class="fas fa-file-pdf"></i> Générer et Envoyer le Contrat
+                        </button>
+                    </div>
+                    
+                    <div id="contractMessage" class="message"></div>
+                </section>
+
+                <!-- Section Ajout de Produits -->
+                <section class="card" id="products">
+                    <h2><i class="fas fa-plus-circle"></i> Publier un Article</h2>
+                    <form id="addProductForm" class="contract-form">
+                        <div class="form-group">
+                            <label for="productTitle">Nom de l'article *</label>
+                            <input type="text" id="productTitle" required maxlength="100">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productPrice">Prix (FCFA) *</label>
+                            <input type="number" id="productPrice" required min="100" max="1000000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productImage">Image de l'article *</label>
+                            <div style="position: relative;">
+                                <input type="file" id="productImage" accept="image/*" required style="display: none;">
+                                <div id="imageUploadArea" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--background-color);">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                                    <p style="color: var(--text-light); margin-bottom: 0.5rem;">Cliquez pour sélectionner une image</p>
+                                    <p style="font-size: 0.8rem; color: var(--text-light);">ou glissez-déposez votre image ici</p>
+                                </div>
+                                <div id="imagePreview" style="display: none; margin-top: 1rem;">
+                                    <img id="previewImg" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                    <button type="button" onclick="removeImage()" class="remove-image-btn">
+                                        <i class="fas fa-trash"></i> Supprimer l'image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productDescription">Description</label>
+                            <textarea id="productDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productCategory">Catégorie *</label>
+                            <select id="productCategory" required>
+                                <option value="">Sélectionnez...</option>
+                                <option value="Vêtements">Vêtements</option>
+                                <option value="Électronique">Électronique</option>
+                                <option value="Alimentation">Alimentation</option>
+                                <option value="Artisanat">Artisanat</option>
+                                <option value="Beauté">Beauté</option>
+                                <option value="Loisirs">Loisirs</option>
+                            </select>
+                        </div>
+                    </form>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-secondary" onclick="addProduct()">
+                            <i class="fas fa-upload"></i> Publier l'Article
+                        </button>
+                    </div>
+                    
+                    <div id="productMessage" class="message"></div>
+                </section>
+
+                <!-- Section Produits -->
+                <section class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2><i class="fas fa-store"></i> Articles Disponibles</h2>
+                        <span id="productCount" style="color: var(--text-light); font-size: 0.9rem;"></span>
+                    </div>
+                    
+                    <!-- Système de tri Aliexpress -->
+                    <div class="sorting-system">
+                        <div class="sorting-header">
+                            <div class="sorting-title">
+                                <i class="fas fa-sort"></i>
+                                Trier par
+                            </div>
+                            <div class="sorting-options">
+                                <button class="sort-btn active" onclick="sortProducts('popularity')">
+                                    <i class="fas fa-fire"></i> Popularité
+                                </button>
+                                <button class="sort-btn" onclick="sortProducts('newest')">
+                                    <i class="fas fa-clock"></i> Nouveautés
+                                </button>
+                                <button class="sort-btn" onclick="sortProducts('price-low')">
+                                    <i class="fas fa-sort-amount-down"></i> Prix croissant
+                                </button>
+                                <button class="sort-btn" onclick="sortProducts('price-high')">
+                                    <i class="fas fa-sort-amount-up"></i> Prix décroissant
+                                </button>
+                                <button class="sort-btn" onclick="sortProducts('rating')">
+                                    <i class="fas fa-star"></i> Évaluations
+                                </button>
+                                <button class="sort-btn" onclick="sortProducts('sales')">
+                                    <i class="fas fa-chart-line"></i> Ventes
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Filtres avancés -->
+                        <div class="advanced-filters">
+                            <div class="filter-group">
+                                <label>Catégorie</label>
+                                <select id="categoryFilter" onchange="filterProducts()">
+                                    <option value="">Toutes les catégories</option>
+                                    <option value="Vêtements">Vêtements</option>
+                                    <option value="Électronique">Électronique</option>
+                                    <option value="Alimentation">Alimentation</option>
+                                    <option value="Artisanat">Artisanat</option>
+                                    <option value="Beauté">Beauté</option>
+                                    <option value="Loisirs">Loisirs</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>Prix (FCFA)</label>
+                                <div class="price-range">
+                                    <input type="number" id="minPrice" placeholder="Min" min="0">
+                                    <span>-</span>
+                                    <input type="number" id="maxPrice" placeholder="Max" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>Évaluation minimum</label>
+                                <select id="ratingFilter" onchange="filterProducts()">
+                                    <option value="">Toutes</option>
+                                    <option value="4">4+ étoiles</option>
+                                    <option value="3">3+ étoiles</option>
+                                    <option value="2">2+ étoiles</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>Statut du vendeur</label>
+                                <select id="sellerFilter" onchange="filterProducts()">
+                                    <option value="">Tous</option>
+                                    <option value="verified">Vendeurs vérifiés</option>
+                                    <option value="premium">Vendeurs premium</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label>Disponibilité</label>
+                                <select id="availabilityFilter" onchange="filterProducts()">
+                                    <option value="">Tous</option>
+                                    <option value="in-stock">En stock</option>
+                                    <option value="low-stock">Stock limité</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Barre de recherche -->
+                    <div class="search-filters">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Rechercher un produit..." class="search-input">
+                            <button class="search-btn" onclick="searchProducts()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="filters">
+                            <button class="btn btn-secondary" onclick="clearAllFilters()">
+                                <i class="fas fa-times"></i> Effacer les filtres
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Chargement des produits...</p>
+                    </div>
+                    <div class="products-grid" id="productsList">
+                        <!-- Les produits seront affichés ici -->
+                    </div>
+                </section>
+            `;
+            
+            renderProducts();
+            setupEventListeners();
+        }
+
+        // Fonctions pour l'espace vendeur
+        function editProduct(productId) {
+            // Fonction pour modifier un produit (à implémenter)
+            showMessage('general', 'Fonction de modification en cours de développement', 'info');
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+                const [sellerId, idx] = productId.split('-');
+                const user = auth.getCurrentUser();
+                
+                if (sellerId === user.id) {
+                    const myProducts = products.filter(p => p.sellerId === user.id);
+                    const productToDelete = myProducts[idx];
+                    
+                    if (productToDelete) {
+                        const productIndex = products.findIndex(p => p === productToDelete);
+                        if (productIndex !== -1) {
+                            products.splice(productIndex, 1);
+                            filteredProducts = [...products];
+                            renderProducts();
+                            showMessage('general', 'Produit supprimé avec succès', 'success');
+                            
+                            // Recharger l'espace vendeur si on y est
+                            if (document.querySelector('.merchant-container')) {
+                                authUI.showMerchantSpace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Configuration du formulaire d'ajout de produit
+        function setupAddProductForm() {
+            const imageInput = document.getElementById('productImage');
+            const imageUploadArea = document.getElementById('imageUploadArea');
+
+            if (imageUploadArea) {
+                imageUploadArea.addEventListener('click', () => {
+                    imageInput.click();
+                });
+
+                imageInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        handleImageSelection(file);
+                    }
+                });
+
+                imageUploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    imageUploadArea.classList.add('dragover');
+                });
+
+                imageUploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    imageUploadArea.classList.remove('dragover');
+                });
+
+                imageUploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    imageUploadArea.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        imageInput.files = files;
+                        handleImageSelection(files[0]);
+                    }
+                });
+            }
+
+            const form = document.getElementById('addProductForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    addProduct();
+                });
+            }
+        }
+    </script>
+</body>
+</html>

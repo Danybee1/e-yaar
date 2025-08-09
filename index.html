@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Yaar - Marketplace du Burkina Faso</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span><i class="fas fa-truck"></i> Livraison gratuite dans tout le Burkina Faso</span>
+                    <span class="ms-3"><i class="fas fa-headset"></i> Service client 24/7</span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" class="auth-link" onclick="showLoginModal()">Connexion</a>
+                    <a href="#" class="auth-link" onclick="showRegisterModal()">Inscription</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <div class="logo">
+                        <div class="logo-icon"></div>
+                        <div class="logo-text">
+                            <h1>E-YAAR</h1>
+                            <p>Marketplace du Burkina Faso</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="search-container">
+                        <input type="text" placeholder="Rechercher parmi des millions de produits..." class="search-input">
+                        <button class="search-btn"><i class="fas fa-search"></i> Rechercher</button>
+                    </div>
+                </div>
+                <div class="col-md-3 text-end">
+                    <div class="header-actions">
+                        <a href="#" class="cart-icon" onclick="showCart()">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <div class="nav-categories">
+                <button class="category-btn active">Toutes catégories</button>
+                <button class="category-btn">Agriculture</button>
+                <button class="category-btn">Alimentation</button>
+                <button class="category-btn">Artisanat</button>
+                <button class="category-btn">Automobile</button>
+                <button class="category-btn">Beauté & Santé</button>
+                <button class="category-btn">Électronique</button>
+                <button class="category-btn">Mode</button>
+                <button class="category-btn">Maison</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="hero-content">
+                        <h1>Bienvenue sur E-Yaar</h1>
+                        <p class="hero-subtitle">La marketplace #1 du Burkina Faso - Des millions de produits à prix imbattables</p>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt text-success"></i>
+                                <span>Achat 100% sécurisé</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-truck text-primary"></i>
+                                <span>Livraison rapide</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-undo text-warning"></i>
+                                <span>Retour gratuit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="service-cards">
+                        <div class="service-card">
+                            <i class="fas fa-shipping-fast text-primary"></i>
+                            <h4>Livraison Express</h4>
+                            <p>24-48h partout</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-shield-alt text-success"></i>
+                            <h4>Paiement Sécurisé</h4>
+                            <p>Mobile Money</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-headset text-info"></i>
+                            <h4>Support 24/7</h4>
+                            <p>Aide instantanée</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            <h2>Produits Populaires</h2>
+            <div class="row" id="products-container">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Connexion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    </form>
+                    <div class="social-login mt-3">
+                        <p class="text-center">Ou connectez-vous avec</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" onclick="loginWithGoogle()">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="loginWithFacebook()">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Créer un compte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="registerTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#clientTab">Client</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#sellerTab">Vendeur</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="clientTab">
+                            <form id="clientRegisterForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Prénom</label>
+                                            <input type="text" class="form-control" name="firstName" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Nom</label>
+                                            <input type="text" class="form-control" name="lastName" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Téléphone</label>
+                                    <input type="tel" class="form-control" name="phone" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mot de passe</label>
+                                    <input type="password" class="form-control" name="password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirmer le mot de passe</label>
+                                    <input type="password" class="form-control" name="confirmPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Créer compte client</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="sellerTab">
+                            <form id="sellerRegisterForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Prénom</label>
+                                            <input type="text" class="form-control" name="firstName" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Nom</label>
+                                            <input type="text" class="form-control" name="lastName" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Téléphone</label>
+                                    <input type="tel" class="form-control" name="phone" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Adresse</label>
+                                    <textarea class="form-control" name="address" rows="3" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Numéro de paiement mobile</label>
+                                    <input type="tel" class="form-control" name="paymentNumber" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mot de passe</label>
+                                    <input type="password" class="form-control" name="password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirmer le mot de passe</label>
+                                    <input type="password" class="form-control" name="confirmPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="contractAgreement" required>
+                                        <label class="form-check-label" for="contractAgreement">
+                                            J'accepte le contrat de vendeur (commission de 10% après vente)
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">Créer compte vendeur</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Administration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminLoginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" value="danielouedraogo1@gmail.com" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Accéder à l'administration</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 

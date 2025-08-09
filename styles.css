@@ -1,0 +1,628 @@
+:root {
+    --primary-color: #FF6B35;
+    --secondary-color: #FF8C42;
+    --accent-color: #FFD23F;
+    --dark-color: #2C3E50;
+    --light-color: #FFFFFF;
+    --background-color: #F8F9FA;
+    --text-color: #2C3E50;
+    --text-light: #6C757D;
+    --border-color: #E9ECEF;
+    --success-color: #28A745;
+    --danger-color: #DC3545;
+    --warning-color: #FFC107;
+    --info-color: #17A2B8;
+    --gradient-primary: linear-gradient(135deg, #FF6B35, #FF8C42);
+    --gradient-secondary: linear-gradient(135deg, #FF8C42, #FFD23F);
+    --shadow-primary: 0 4px 20px rgba(255, 107, 53, 0.15);
+    --shadow-secondary: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--background-color);
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Top Bar */
+.top-bar {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.top-bar .auth-link {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: opacity 0.3s;
+}
+
+.top-bar .auth-link:hover {
+    opacity: 0.8;
+}
+
+/* Header */
+.main-header {
+    background: white;
+    padding: 20px 0;
+    box-shadow: var(--shadow-secondary);
+}
+
+/* Logo avec style Burkina Faso */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #009E60 0%, #FFD700 50%, #EF3340 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 158, 96, 0.3);
+}
+
+.logo-icon::before {
+    content: "★";
+    font-size: 30px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.logo-icon::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid #FFD700;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+    background: linear-gradient(135deg, #009E60, #FFD700, #EF3340);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo p {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.search-container {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 25px 0 0 25px;
+    border-right: none;
+    font-size: 16px;
+}
+
+.search-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 0 25px 25px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background: var(--secondary-color);
+}
+
+.cart-icon {
+    position: relative;
+    color: var(--primary-color);
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+/* Navigation */
+.main-nav {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+}
+
+.nav-categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 10px;
+}
+
+.category-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.category-btn.active,
+.category-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Hero Section */
+.hero-section {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 60px 0;
+    margin-bottom: 40px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.hero-features {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.feature-item i {
+    font-size: 20px;
+}
+
+/* Service Cards */
+.service-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.service-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+}
+
+.service-card i {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.service-card h4 {
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.service-card p {
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* Products Section */
+.products-section {
+    padding: 40px 0;
+}
+
+.products-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--dark-color);
+}
+
+.product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s;
+    margin-bottom: 30px;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.product-price {
+    font-size: 20px;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.product-seller {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 15px;
+}
+
+.add-to-cart-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+}
+
+.add-to-cart-btn:hover {
+    background: var(--secondary-color);
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+}
+
+.modal-header {
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-success {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+/* Social Login Buttons */
+.social-login .btn {
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-features {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .service-cards {
+        margin-top: 30px;
+    }
+    
+    .search-container {
+        margin: 20px 0;
+    }
+    
+    .nav-categories {
+        justify-content: flex-start;
+    }
+}
+
+/* Admin Panel Styles */
+.admin-panel {
+    background: var(--dark-color);
+    color: white;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    background: #34495e;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.admin-content {
+    padding: 20px;
+}
+
+.admin-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-card);
+}
+
+.admin-table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Success/Error Messages */
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Payment Methods */
+.payment-methods {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.payment-method {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.payment-method.orange {
+    background: #FF6600;
+    color: white;
+}
+
+.payment-method.moov {
+    background: #00A651;
+    color: white;
+}
+
+.payment-method.telecel {
+    background: #0066CC;
+    color: white;
+} 
+
+/* Logos de paiement mobile */
+.payment-logos {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.payment-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.payment-logo:hover {
+    transform: scale(1.1);
+}
+
+.payment-logo.orange-money {
+    background: linear-gradient(135deg, #FF6600, #FF8533);
+}
+
+.payment-logo.moov-money {
+    background: linear-gradient(135deg, #00A651, #33CC66);
+}
+
+.payment-logo.telecel-money {
+    background: linear-gradient(135deg, #0066CC, #3399FF);
+}
+
+.payment-logo.mtn-money {
+    background: linear-gradient(135deg, #FFC107, #FFD54F);
+}
+
+.payment-logo.airtel-money {
+    background: linear-gradient(135deg, #E91E63, #F06292);
+}
+
+/* Section de paiement mobile dans le footer */
+.payment-section {
+    background: white;
+    padding: 30px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.payment-section h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+}
+
+.payment-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.payment-method-card {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-card);
+}
+
+.payment-method-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-primary);
+}
+
+.payment-method-card .payment-logo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    font-size: 16px;
+}
+
+.payment-method-card h4 {
+    color: var(--dark-color);
+    margin-bottom: 10px;
+}
+
+.payment-method-card p {
+    color: var(--text-light);
+    font-size: 14px;
+    margin: 0;
+} 
