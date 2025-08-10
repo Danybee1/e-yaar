@@ -1,7 +1,35 @@
+    <!-- Password Reset Modal -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Réinitialiser le mot de passe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="resetPasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Envoyer le lien de réinitialisation</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Redirection automatique vers HTTPS en production
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        location.href = 'https://' + location.hostname + location.pathname + location.search;
+    }
+    </script>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <!-- Content Security Policy pour renforcer la sécurité -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com https://connect.facebook.net https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https://via.placeholder.com; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self'; frame-src https://accounts.google.com https://www.facebook.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Yaar - Marketplace du Burkina Faso</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -149,6 +177,9 @@
                             <input type="password" class="form-control" name="password" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                        <div class="text-end mt-2">
+                            <a href="#" onclick="showResetPasswordModal()">Mot de passe oublié ?</a>
+                        </div>
                     </form>
                     <div class="social-login mt-3">
                         <p class="text-center">Ou connectez-vous avec</p>
@@ -185,7 +216,18 @@
                     </ul>
                     <div class="tab-content mt-3">
                         <div class="tab-pane fade show active" id="clientTab">
+                            <!-- Boutons d'inscription sociale -->
+                            <div class="mb-3 text-center">
+                                <button type="button" id="googleSignUpBtn" class="btn btn-outline-danger w-100 mb-2"><i class="fab fa-google"></i> S’inscrire avec Google</button>
+                                <button type="button" id="facebookSignUpBtn" class="btn btn-outline-primary w-100"><i class="fab fa-facebook"></i> S’inscrire avec Facebook</button>
+                                <div id="socialAuthError" class="text-danger mt-2" style="display:none;"></div>
+                                <div class="text-center my-2 text-muted">— ou —</div>
+                            </div>
                             <form id="clientRegisterForm">
+        <!-- Champ honeypot anti-bot -->
+        <div style="display:none;">
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
@@ -220,7 +262,18 @@
                             </form>
                         </div>
                         <div class="tab-pane fade" id="sellerTab">
+                            <!-- Boutons d'inscription sociale pour vendeur -->
+                            <div class="mb-3 text-center">
+                                <button type="button" id="googleSignUpBtnSeller" class="btn btn-outline-danger w-100 mb-2"><i class="fab fa-google"></i> S’inscrire avec Google</button>
+                                <button type="button" id="facebookSignUpBtnSeller" class="btn btn-outline-primary w-100"><i class="fab fa-facebook"></i> S’inscrire avec Facebook</button>
+                                <div id="socialAuthErrorSeller" class="text-danger mt-2" style="display:none;"></div>
+                                <div class="text-center my-2 text-muted">— ou —</div>
+                            </div>
                             <form id="sellerRegisterForm">
+        <!-- Champ honeypot anti-bot -->
+        <div style="display:none;">
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
@@ -302,6 +355,75 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Facebook SDK -->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js"></script>
     <script src="script.js"></script>
+    <script>
+    function showResetPasswordModal() {
+        var modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+        modal.show();
+    }
+    </script>
+    <script>
+    // Initialisation Google et Facebook
+    window.addEventListener('DOMContentLoaded', function() {
+        // Google Sign Up
+        document.getElementById('googleSignUpBtn').onclick = function() {
+            google.accounts.id.initialize({
+                client_id: 'VOTRE_CLIENT_ID_GOOGLE', // À remplacer par votre vrai ID
+                callback: handleGoogleCredentialResponse
+            });
+            google.accounts.id.prompt();
+        };
+        // Facebook Sign Up
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : 'VOTRE_APP_ID_FACEBOOK', // À remplacer
+                cookie     : true,
+                xfbml      : true,
+                version    : 'v19.0'
+            });
+        };
+        document.getElementById('facebookSignUpBtn').onclick = function() {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    FB.api('/me', {fields: 'name,email'}, function(profile) {
+                        handleFacebookProfile(profile, response.authResponse.accessToken);
+                    });
+                } else {
+                    showSocialAuthError('Connexion Facebook annulée.');
+                }
+            }, {scope: 'email,public_profile'});
+        };
+    });
+    // Gestion des réponses Google/Facebook
+    function handleGoogleCredentialResponse(response) {
+        // Ici, envoyer le token à votre backend pour validation sécurisée !
+        // Exemple : fetch('/api/auth/google', {method:'POST', body: JSON.stringify({credential: response.credential})})
+        // Pour la démo, on décode le JWT côté client (à ne pas utiliser en prod sans vérif serveur)
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        if(payload && payload.email) {
+            alert('Inscription Google réussie pour : ' + payload.email);
+        } else {
+            showSocialAuthError('Erreur lors de l’authentification Google.');
+        }
+    }
+    function handleFacebookProfile(profile, accessToken) {
+        // Ici, envoyer le token à votre backend pour validation sécurisée !
+        // Exemple : fetch('/api/auth/facebook', {method:'POST', body: JSON.stringify({accessToken})})
+        if(profile && profile.email) {
+            alert('Inscription Facebook réussie pour : ' + profile.email);
+        } else {
+            showSocialAuthError('Erreur lors de l’authentification Facebook.');
+        }
+    }
+    function showSocialAuthError(msg) {
+        var el = document.getElementById('socialAuthError');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+    </script>
 </body>
 </html> 
