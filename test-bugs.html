@@ -135,9 +135,16 @@
     </div>
 
     <script>
+        // Fonction utilitaire pour échapper le HTML (protection XSS)
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/[&<>\"]/g, function (c) {
+                return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
+            });
+        }
         function showResult(elementId, message, type = 'info') {
             const element = document.getElementById(elementId);
-            element.innerHTML = `<div class="test-result ${type}">${message}</div>`;
+            element.innerHTML = `<div class="test-result ${type}">${escapeHTML(message)}</div>`;
         }
 
         function testFunctions() {
@@ -279,4 +286,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
